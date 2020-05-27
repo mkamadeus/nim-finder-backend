@@ -6,6 +6,12 @@ const connection = mysql.createPool(
   require('./credentials.json')
 );
 
+connection.getConnection((err) => {
+  if(err) { return console.error(err); }
+
+  console.log('Connected to MySQL Server.');
+})
+
 let db = {};
 
 db.studentNameQuery = (keyword, page) => {
