@@ -1,4 +1,3 @@
-const express = require("express");
 const db = require("../database");
 
 const facultyMap = require("../json/list_fakultas.json");
@@ -7,10 +6,10 @@ const majorMap = require("../json/list_jurusan.json");
 module.exports.getStudentByQuery = async (req, res) => {
   const keyword = req.query.keyword;
 
-  if (RegExp(/\w+[0-9][0-9]/).test(keyword)) {
+  if (RegExp(/[A-z]+[0-9][0-9]/).test(keyword)) {
     
     const prefix = keyword.slice(0, keyword.length - 2);
-    console.log("faculty/major +", prefix);
+    // console.log("faculty/major +", prefix);
 
     if (prefix in facultyMap) {
       getStudentByFaculty(req, res);
@@ -20,10 +19,10 @@ module.exports.getStudentByQuery = async (req, res) => {
       res.json({ data: [] });
     }
   } else if (RegExp(/[0-9]+/).test(keyword)) {
-    console.log("nim");
+    // console.log("nim");
     getStudentByNim(req, res);
   } else {
-    console.log("name");
+    // console.log("name");
     getStudentByName(req, res);
   }
 };

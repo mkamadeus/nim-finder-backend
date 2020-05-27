@@ -89,9 +89,7 @@ db.studentFacultyQuery = (faculty, year, page) => {
 db.studentFacultyCount = (faculty, year, page) => {
   return new Promise((resolve, reject) => {
     connection.query(
-      `SELECT count(*) AS count FROM mahasiswa WHERE fakultas = '${faculty}' AND tahun = ${year} ORDER BY nama LIMIT ${resultCount} OFFSET ${
-        resultCount * (page || 0)
-      }`,
+      `SELECT count(*)  AS count FROM mahasiswa WHERE fakultas = '${faculty}' AND tahun = ${year}`,
       (err, results) => {
         if (err) {
           return reject(err);
@@ -121,9 +119,7 @@ db.studentMajorQuery = (major, year, page) => {
 db.studentMajorCount = (major, year, page) => {
   return new Promise((resolve, reject) => {
     connection.query(
-      `SELECT count(*) FROM mahasiswa WHERE jurusan = '${major}' AND tahun = ${year} ORDER BY nama LIMIT ${resultCount} OFFSET ${
-        resultCount * (page || 0)
-      }`,
+      `SELECT count(*) AS count FROM mahasiswa WHERE jurusan = '${major}' AND tahun = ${year}`,
       (err, results) => {
         if(err) {
           return reject(err);
