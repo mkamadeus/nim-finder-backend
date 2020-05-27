@@ -1,11 +1,9 @@
 const mysql = require("mysql");
-const fs = require("fs");
-const path = require("path");
 
 const resultCount = 10;
 
 const connection = mysql.createPool(
-  JSON.parse(fs.readFileSync(path.resolve(__dirname, "./credentials.json")))
+  require('./credentials.json')
 );
 
 let db = {};
