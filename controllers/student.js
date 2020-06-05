@@ -4,12 +4,12 @@ const facultyMap = require("../json/list_fakultas.json");
 const majorMap = require("../json/list_jurusan.json");
 
 module.exports.getStudentByQuery = async (req, res) => {
+  req.query.keyword = req.query.keyword.replace(RegExp(/\'/), "''");
+
   const keyword = req.query.keyword;
 
   if (RegExp(/[A-z]+[0-9][0-9]/).test(keyword)) {
-    
     const prefix = keyword.slice(0, keyword.length - 2);
-    // console.log("faculty/major +", prefix);
 
     if (prefix in facultyMap) {
       getStudentByFaculty(req, res);
@@ -19,10 +19,8 @@ module.exports.getStudentByQuery = async (req, res) => {
       res.json({ data: [] });
     }
   } else if (RegExp(/[0-9]+/).test(keyword)) {
-    // console.log("nim");
     getStudentByNim(req, res);
   } else {
-    // console.log("name");
     getStudentByName(req, res);
   }
 };
@@ -30,11 +28,13 @@ module.exports.getStudentByQuery = async (req, res) => {
 const getStudentByNim = async (req, res) => {
   const keyword = req.query.keyword;
   const page = req.query.page || 0;
+  const order = req.query.order || "nama";
+  const asc = req.query.asc === "true" || typeof req.query.asc === "undefined";
 
-  const data = await db.studentNimQuery(keyword, page);
+  const data = await db.studentNimQuery(keyword, page, order, asc);
   const count = await db.studentNimCount(keyword);
 
-  if (page === 0) {
+  if (page == 0) {
     res.json({
       count: count,
       page: page,
@@ -50,11 +50,13 @@ const getStudentByNim = async (req, res) => {
 
 const getStudentByName = async (req, res) => {
   const keyword = req.query.keyword.toLowerCase();
-  const page = req.query.page || 0;
+  const page = req.query.page || "0";
+  const order = req.query.order || "nama";
+  const asc = req.query.asc === "true" || typeof req.query.asc === "undefined";
 
-  const data = await db.studentNameQuery(keyword, page);
+  const data = await db.studentNameQuery(keyword, page, order, asc);
   const count = await db.studentNameCount(keyword);
-  if (page === 0) {
+  if (page == 0) {
     res.json({
       count: count,
       page: page,
@@ -71,14 +73,16 @@ const getStudentByName = async (req, res) => {
 const getStudentByFaculty = async (req, res) => {
   const keyword = req.query.keyword.toLowerCase();
   const page = req.query.page || 0;
+  const order = req.query.order || "nama";
+  const asc = req.query.asc === "true" || typeof req.query.asc === "undefined";
 
   const faculty = facultyMap[keyword.slice(0, keyword.length - 2)];
   const year = 2000 + parseInt(keyword.slice(keyword.length - 2));
 
-  const data = await db.studentFacultyQuery(faculty, year, page);
+  const data = await db.studentFacultyQuery(faculty, year, page, order, asc);
   const count = await db.studentFacultyCount(faculty, year);
 
-  if (page === 0) {
+  if (page == 0) {
     res.json({
       count: count,
       page: page,
@@ -95,14 +99,16 @@ const getStudentByFaculty = async (req, res) => {
 const getStudentByMajor = async (req, res) => {
   const keyword = req.query.keyword.toLowerCase();
   const page = req.query.page || 0;
+  const order = req.query.order || "nama";
+  const asc = req.query.asc === "true" || typeof req.query.asc === "undefined";
 
   const major = majorMap[keyword.slice(0, keyword.length - 2)];
   const year = 2000 + parseInt(keyword.slice(keyword.length - 2));
 
-  const data = await db.studentMajorQuery(major, year, page);
+  const data = await db.studentMajorQuery(major, year, page, order, asc);
   const count = await db.studentMajorCount(major, year);
 
-  if (page === 0) {
+  if (page == 0) {
     res.json({
       count: count,
       page: page,
