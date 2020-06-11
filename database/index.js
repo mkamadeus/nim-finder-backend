@@ -1,25 +1,25 @@
-const mysql = require("mysql");
+const mysql = require('mysql');
 
 const resultCount = 20;
 
-const connection = mysql.createPool(
-  require('./credentials.json')
-);
+const connection = mysql.createPool(require('./credentials.json'));
 
 connection.getConnection((err) => {
-  if(err) { return console.error(err); }
+  if (err) {
+    return console.error(err);
+  }
 
   console.log('Connected to MySQL Server.');
-})
+});
 
 let db = {};
 
 db.studentNameQuery = (keyword, page, order, asc) => {
   return new Promise((resolve, reject) => {
     connection.query(
-      `SELECT * FROM mahasiswa WHERE nama LIKE '%${keyword}%' ORDER BY ISNULL(${order}) ${asc ? 'ASC' : 'DESC'}, ${order} ${asc ? 'ASC' : 'DESC'} LIMIT ${resultCount} OFFSET ${
-        resultCount * (page || 0)
-      }`,
+      `SELECT * FROM mahasiswa WHERE nama LIKE '%${keyword}%' ORDER BY ${order} ${
+        asc ? 'ASC' : 'DESC'
+      } LIMIT ${resultCount} OFFSET ${resultCount * (page || 0)}`,
       (err, results) => {
         if (err) {
           return reject(err);
@@ -33,11 +33,11 @@ db.studentNameQuery = (keyword, page, order, asc) => {
 db.studentNimQuery = (keyword, page, order, asc) => {
   return new Promise((resolve, reject) => {
     connection.query(
-      `SELECT * FROM mahasiswa WHERE nim_fakultas LIKE '%${keyword}%' OR nim_jurusan LIKE '%${keyword}%' ORDER BY ISNULL(${order}) ${asc ? 'ASC' : 'DESC'}, ${order} ${asc ? 'ASC' : 'DESC'} LIMIT ${resultCount} OFFSET ${
-        resultCount * (page || 0)
-      }`,
+      `SELECT * FROM mahasiswa WHERE nim_fakultas LIKE '%${keyword}%' OR nim_jurusan LIKE '%${keyword}%' ORDER BY ${order} ${
+        asc ? 'ASC' : 'DESC'
+      } LIMIT ${resultCount} OFFSET ${resultCount * (page || 0)}`,
       (err, results) => {
-        if(err) {
+        if (err) {
           return reject(err);
         }
         return resolve(results);
@@ -49,9 +49,9 @@ db.studentNimQuery = (keyword, page, order, asc) => {
 db.studentFacultyQuery = (faculty, year, page, order, asc) => {
   return new Promise((resolve, reject) => {
     connection.query(
-      `SELECT * FROM mahasiswa WHERE fakultas = '${faculty}' AND tahun = ${year} ORDER BY ISNULL(${order}) ${asc ? 'ASC' : 'DESC'}, ${order} ${asc ? 'ASC' : 'DESC'} LIMIT ${resultCount} OFFSET ${
-        resultCount * (page || 0)
-      }`,
+      `SELECT * FROM mahasiswa WHERE fakultas = '${faculty}' AND tahun = ${year} ORDER BY ${order} ${
+        asc ? 'ASC' : 'DESC'
+      } LIMIT ${resultCount} OFFSET ${resultCount * (page || 0)}`,
       (err, results) => {
         if (err) {
           return reject(err);
@@ -65,18 +65,18 @@ db.studentFacultyQuery = (faculty, year, page, order, asc) => {
 db.studentMajorQuery = (major, year, page, order, asc) => {
   return new Promise((resolve, reject) => {
     connection.query(
-      `SELECT * FROM mahasiswa WHERE jurusan = '${major}' AND tahun = ${year} ORDER BY ISNULL(${order}) ${asc ? 'ASC' : 'DESC'}, ${order} ${asc ? 'ASC' : 'DESC'} LIMIT ${resultCount} OFFSET ${
-        resultCount * (page || 0)
-      }`,
+      `SELECT * FROM mahasiswa WHERE jurusan = '${major}' AND tahun = ${year} ORDER BY ${order} ${
+        asc ? 'ASC' : 'DESC'
+      } LIMIT ${resultCount} OFFSET ${resultCount * (page || 0)}`,
       (err, results) => {
-        if(err) {
+        if (err) {
           return reject(err);
         }
-        return resolve(results)
+        return resolve(results);
       }
-    )
-  })
-}
+    );
+  });
+};
 
 db.studentNameCount = (keyword) => {
   return new Promise((resolve, reject) => {
@@ -125,13 +125,13 @@ db.studentMajorCount = (major, year, page) => {
     connection.query(
       `SELECT count(*) AS count FROM mahasiswa WHERE jurusan = '${major}' AND tahun = ${year}`,
       (err, results) => {
-        if(err) {
+        if (err) {
           return reject(err);
         }
-        return resolve(results[0].count)
+        return resolve(results[0].count);
       }
-    )
-  })
-}
+    );
+  });
+};
 
 module.exports = db;
